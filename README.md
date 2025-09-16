@@ -84,7 +84,7 @@ This extension:
 
 ## Support
 
-- **Issues**: Report bugs or request features on [GitHub Issues](https://github.com/ChadwickFenwick/chrome_timer_v1/issues)
+- **Issues**: Report bugs or request features on [GitHub Issues](https://github.com/ChadwickFenwick/Total-Tab-Timer/issues)
 - **Author**: [ChadwickFenwick](https://github.com/ChadwickFenwick)
 - **Support**: [Buy Me a Coffee ☕](https://ko-fi.com/chadfenwick)
 
