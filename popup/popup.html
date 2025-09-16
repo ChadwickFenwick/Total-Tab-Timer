@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Total Tab Timer</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12,6 12,12 16,14"/>
+                </svg>
+                Total Tab Timer
+            </h1>
+            <div class="badge" id="activeTimersCount">0</div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="current">Current Tab</button>
+            <button class="tab-btn" data-tab="all">All Timers</button>
+        </div>
+
+        <div class="tab-content" id="currentTab">
+            <div class="current-tab-info">
+                <div class="tab-title" id="currentTabTitle">Loading...</div>
+                <div class="tab-url" id="currentTabUrl"></div>
+            </div>
+
+            <div class="timer-form">
+                <div class="form-group">
+                    <label for="timerType">Timer Type</label>
+                    <select id="timerType" class="select">
+                        <option value="countdown">Countdown</option>
+                        <option value="scheduled">Specific Time</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="countdownGroup">
+                    <label for="countdownTime">Close Tab In</label>
+                    <div class="time-inputs">
+                        <input type="number" id="hours" min="0" max="23" value="0" class="time-input">
+                        <span>H</span>
+                        <input type="number" id="minutes" min="0" max="59" value="5" class="time-input">
+                        <span>M</span>
+                        <input type="number" id="seconds" min="0" max="59" value="0" class="time-input">
+                        <span>S</span>
+                    </div>
+                </div>
+
+                <div class="form-group hidden" id="scheduledGroup">
+                    <label for="scheduledTime">Close Tab At</label>
+                    <input type="datetime-local" id="scheduledTime" class="input">
+                </div>
+
+                <div class="form-group">
+                    <label for="timerLabel">Label (optional)</label>
+                    <input type="text" id="timerLabel" placeholder="e.g., Break time" class="input">
+                </div>
+
+                <button id="createTimer" class="btn btn-primary">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="16"/>
+                        <line x1="8" y1="12" x2="16" y2="12"/>
+                    </svg>
+                    Set Timer
+                </button>
+            </div>
+
+            <div class="current-timers" id="currentTimers">
+                <h3 class="section-title">Active Timers for This Tab</h3>
+                <div class="timer-list" id="currentTimerList">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                        <p>No timers set for this tab</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-content hidden" id="allTab">
+            <div class="all-timers">
+                <div class="section-header">
+                    <h3 class="section-title">All Active Timers</h3>
+                    <button id="clearAllTimers" class="btn btn-secondary btn-sm">Clear All</button>
+                </div>
+                <div class="timer-list" id="allTimerList">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                        <p>No Active Timers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal hidden" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Timer</h3>
+                <button class="modal-close" id="closeModal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editTimerType">Timer Type</label>
+                    <select id="editTimerType" class="select">
+                        <option value="countdown">Countdown</option>
+                        <option value="scheduled">Specific Time</option>
+                    </select>
+                </div>
+                <div class="form-group" id="editCountdownGroup">
+                    <label>Close Tab In</label>
+                    <div class="time-inputs">
+                        <input type="number" id="editHours" min="0" max="23" class="time-input">
+                        <span>H</span>
+                        <input type="number" id="editMinutes" min="0" max="59" class="time-input">
+                        <span>M</span>
+                        <input type="number" id="editSeconds" min="0" max="59" class="time-input">
+                        <span>S</span>
+                    </div>
+                </div>
+                <div class="form-group hidden" id="editScheduledGroup">
+                    <label for="editScheduledTime">Close Tab At</label>
+                    <input type="datetime-local" id="editScheduledTime" class="input">
+                </div>
+                <div class="form-group">
+                    <label for="editTimerLabel">Label (optional)</label>
+                    <input type="text" id="editTimerLabel" placeholder="e.g., Break time" class="input">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelEdit" class="btn btn-secondary">Cancel</button>
+                <button id="saveEdit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    <div class="footer"><a href="https://github.com/ChadwickFenwick" target="_blank">Visit my GitHub</a><br><a href="https://ko-fi.com/chadfenwick" target="_blank">☕ Buy Me a Coffee ☕</a></div>
+    <script src="popup.js"></script>
+</body>
+</html>
